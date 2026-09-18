@@ -156,6 +156,19 @@
             font-family: monospace;
             color: #e2e8f0;
         }
+
+        .error-display {
+            color: #ff6b6b;
+            margin: -0.75rem 0 1.5rem;
+        }
+
+        @media (max-width: 700px) {
+            .dashboard-links,
+            .grid {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+        }
     </style>
 </head>
 <body>
@@ -166,22 +179,18 @@
     </div>
 
     <nav class="dashboard-links" aria-label="Dashboard navigation">
-        <a href="isomorphic_engine.html" class="btn">
-            Launch Entropy Engine Dashboard
-        </a>
-        <a href="isomorphic_api_gateway_interceptor.html" class="btn">
-            Launch API Gateway Interceptor
-        </a>
+        <a href="isomorphic_engine.html" class="btn">Launch Entropy Engine Dashboard</a>
+        <a href="isomorphic_api_gateway_interceptor.html" class="btn">Launch API Gateway Interceptor</a>
     </nav>
 
     <div class="equation-box">
         <strong>Isomorphic Core Axiom:</strong> &phi;(u &oplus; v) = &phi;(u) &otimes; &phi;(v) | Bounded Schema Complexity: O(N log K) | Ker(&phi;) = {0}
     </div>
 
-    <button class="btn" onclick="runComparison()" style="margin-bottom: 1.5rem;">Run Live Comparison Test</button>
+    <button id="run-test-btn" class="btn" type="button" style="margin-bottom: 1.5rem;">Run Live Comparison Test</button>
+    <div id="error-display" class="error-display" role="alert" hidden></div>
 
     <div class="grid">
-        <!-- STANDARD LLM PIPELINE -->
         <div class="panel">
             <div class="panel-title">
                 Standard Autoregressive LLM
@@ -189,22 +198,12 @@
             </div>
             <textarea id="standard-output" readonly placeholder="Click 'Run Live Comparison Test' to execute pipeline..."></textarea>
             <div class="metrics-grid">
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">Latency</div>
-                    <div class="metric-val" id="std-latency" style="color:var(--accent-red)">0 ms</div>
-                </div>
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">Compute CPU</div>
-                    <div class="metric-val" id="std-cpu">0%</div>
-                </div>
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">AST Valid</div>
-                    <div class="metric-val" id="std-valid">-</div>
-                </div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">Latency</div><div class="metric-val" id="std-latency" style="color:var(--accent-red)">0 ms</div></div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">Compute CPU</div><div class="metric-val" id="std-cpu">0%</div></div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">AST Valid</div><div class="metric-val" id="std-valid">-</div></div>
             </div>
         </div>
 
-        <!-- ISOMORPHIC CONTROLLER PIPELINE -->
         <div class="panel">
             <div class="panel-title">
                 Isomorphic Schema Engine
@@ -212,62 +211,61 @@
             </div>
             <textarea id="iso-output" readonly placeholder="Click 'Run Live Comparison Test' to execute pipeline..."></textarea>
             <div class="metrics-grid">
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">Latency</div>
-                    <div class="metric-val" id="iso-latency" style="color:var(--accent-green)">0 ms</div>
-                </div>
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">Compute CPU</div>
-                    <div class="metric-val" id="iso-cpu">&lt; 1%</div>
-                </div>
-                <div class="metric-card">
-                    <div style="font-size:0.75rem; color:var(--text-muted)">AST Valid</div>
-                    <div class="metric-val" id="iso-valid" style="color:var(--accent-green)">True</div>
-                </div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">Latency</div><div class="metric-val" id="iso-latency" style="color:var(--accent-green)">0 ms</div></div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">Compute CPU</div><div class="metric-val" id="iso-cpu">&lt; 1%</div></div>
+                <div class="metric-card"><div style="font-size:0.75rem; color:var(--text-muted)">AST Valid</div><div class="metric-val" id="iso-valid" style="color:var(--accent-green)">True</div></div>
             </div>
         </div>
     </div>
 
     <script>
-        function runComparison() {
-            // Standard LLM Simulation
-            document.getElementById('standard-output').value = "Processing probabilistic token generation loops...\nAnalyzing context window...\nAttempting syntax repair...";
-            document.getElementById('std-latency').innerText = "...";
-            document.getElementById('std-cpu').innerText = "98%";
-            document.getElementById('std-valid').innerText = "False";
+        (() => {
+            const byId = (id) => document.getElementById(id);
+            const runButton = byId('run-test-btn');
+            const errorDisplay = byId('error-display');
 
-            // Isomorphic Simulation
-            document.getElementById('iso-output').value = "Executing Isomorphic AST Schema Mapping...\nApplying homomorphism phi(u + v)...\nCollapsing entropy bound...";
-            
-            setTimeout(() => {
-                // Standard Result
-                document.getElementById('standard-output').value = `{
-  "event": "PAYMENT_INTENT",
-  "amount": 9950,
-  "status": "succeeded",
-  "metadata": {
-    "user_id": "USR_9921"
-  }
-}`;
-                document.getElementById('std-latency').innerText = "3,420 ms";
-                document.getElementById('std-cpu').innerText = "100%";
-                document.getElementById('std-valid').innerText = "False (Drift)";
+            function runComparison() {
+                try {
+                    errorDisplay.hidden = true;
+                    errorDisplay.textContent = '';
 
-                // Isomorphic Result
-                document.getElementById('iso-output').value = `{
-  "event": "PAYMENT_INTENT",
-  "amount": 9950,
-  "status": "succeeded",
-  "metadata": {
-    "user_id": "USR_9921"
-  },
-  "encoding": "isomorphic"
-}`;
-                document.getElementById('iso-latency').innerText = "3.2 ms";
-                document.getElementById('iso-cpu').innerText = "< 1%";
-                document.getElementById('iso-valid').innerText = "True";
-            }, 800);
-        }
+                    byId('standard-output').value = 'Processing probabilistic token generation loops...\nAnalyzing context window...\nAttempting syntax repair...';
+                    byId('std-latency').textContent = '...';
+                    byId('std-cpu').textContent = '98%';
+                    byId('std-valid').textContent = 'False';
+                    byId('iso-output').value = 'Executing Isomorphic AST Schema Mapping...\nApplying homomorphism phi(u + v)...\nCollapsing entropy bound...';
+
+                    window.setTimeout(() => {
+                        byId('standard-output').value = JSON.stringify({
+                            event: 'PAYMENT_INTENT',
+                            amount: 9950,
+                            status: 'succeeded',
+                            metadata: { user_id: 'USR_9921' }
+                        }, null, 2);
+                        byId('std-latency').textContent = '3,420 ms';
+                        byId('std-cpu').textContent = '100%';
+                        byId('std-valid').textContent = 'False (Drift)';
+
+                        byId('iso-output').value = JSON.stringify({
+                            event: 'PAYMENT_INTENT',
+                            amount: 9950,
+                            status: 'succeeded',
+                            metadata: { user_id: 'USR_9921' },
+                            encoding: 'isomorphic'
+                        }, null, 2);
+                        byId('iso-latency').textContent = '3.2 ms';
+                        byId('iso-cpu').textContent = '< 1%';
+                        byId('iso-valid').textContent = 'True';
+                    }, 800);
+                } catch (error) {
+                    errorDisplay.textContent = 'Error running comparison test: ' + error.message;
+                    errorDisplay.hidden = false;
+                    console.error('Comparison test failure:', error);
+                }
+            }
+
+            runButton.addEventListener('click', runComparison);
+        })();
     </script>
 </body>
 </html>
