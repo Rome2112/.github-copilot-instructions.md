@@ -9,7 +9,7 @@ class IsomorphicASTController:
 
     def __init__(self, schema_keys: list[str]):
         if not isinstance(schema_keys, list):
-            raise ValueError("schema_keys must be a list of strings")
+            raise TypeError("schema_keys must be a list of strings")
         if any(not isinstance(key, str) or not key for key in schema_keys):
             raise ValueError("schema_keys must be a list of non-empty strings")
         if len(set(schema_keys)) != len(schema_keys):
@@ -28,7 +28,7 @@ class IsomorphicASTController:
             raise ValueError("payload must be valid JSON") from exc
 
         if not isinstance(decoded, dict):
-            raise ValueError("payload JSON must contain an object")
+            raise TypeError("payload JSON must contain an object")
 
         return self.parse_isomorphic(decoded)
 

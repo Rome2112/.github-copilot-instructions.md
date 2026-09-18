@@ -1,12 +1,11 @@
-import json
-import subprocess
-import tempfile
-import unittest
 from html.parser import HTMLParser
 from pathlib import Path
+import subprocess
+import tempfile
+from typing import ClassVar
+import unittest
 
 from isomorphic_benchmark import IsomorphicASTController
-
 
 ROOT = Path(__file__).resolve().parent
 DOCS = ROOT / "docs"
@@ -94,6 +93,8 @@ class TestIsomorphicEngine(unittest.TestCase):
             IsomorphicASTController(["status", "status"])
         with self.assertRaises(ValueError):
             IsomorphicASTController(["status", ""])
+        with self.assertRaises(TypeError):
+            IsomorphicASTController("invalid_schema_type")
 
     def test_benchmark_latency_is_non_negative(self):
         self.controller.parse_isomorphic({"request_id": "warmup"})
@@ -102,14 +103,14 @@ class TestIsomorphicEngine(unittest.TestCase):
 
 
 class TestDashboardSmoke(unittest.TestCase):
-    required_ids = {
+    required_ids: ClassVar[dict[str, set[str]]] = {
         "index.html": {"run-btn", "standard-output", "iso-output", "iso-valid"},
         "isomorphic_engine.html": {"rawInputText", "transformBtn", "astOutputText", "pipeStep1"},
         "isomorphic_api_gateway_interceptor.html": {"inputPayload", "repairBtn", "outputPayload", "processingOverlay"},
     }
 
     def test_dashboards_have_required_dom_nodes_and_scripts_parse(self):
-        node = subprocess.run(["which", "node"], capture_output=True, text=True)
+        node = subprocess.run(["which", "node"], capture_output=True, text=True, check=False)
         has_node = node.returncode == 0
 
         for filename, required in self.required_ids.items():
@@ -129,7 +130,7 @@ class TestDashboardSmoke(unittest.TestCase):
                             handle.write(script)
                             script_path = handle.name
                         try:
-                            result = subprocess.run(["node", "--check", script_path], capture_output=True, text=True)
+                            result = subprocess.run(["node", "--check", script_path], capture_output=True, text=True, check=False)
                             self.assertEqual(result.returncode, 0, result.stderr)
                         finally:
                             Path(script_path).unlink(missing_ok=True)
