@@ -230,8 +230,6 @@
 
     <script>
         function runComparison() {
-            const rawPayload = '{"event": "PAYMENT_INTENT", "amount": 9950, "status": "succeeded", "metadata": { "user_id": "USR_9921"'; // Unclosed JSON
-
             // Standard LLM Simulation
             document.getElementById('standard-output').value = "Processing probabilistic token generation loops...\nAnalyzing context window...\nAttempting syntax repair...";
             document.getElementById('std-latency').innerText = "...";
@@ -248,8 +246,9 @@
   "amount": 9950,
   "status": "succeeded",
   "metadata": {
-    "user_id": "USR_9921",
-    [...]
+    "user_id": "USR_9921"
+  }
+}`;
                 document.getElementById('std-latency').innerText = "3,420 ms";
                 document.getElementById('std-cpu').innerText = "100%";
                 document.getElementById('std-valid').innerText = "False (Drift)";
@@ -262,7 +261,8 @@
   "metadata": {
     "user_id": "USR_9921"
   },
-  "e[...]`;
+  "encoding": "isomorphic"
+}`;
                 document.getElementById('iso-latency').innerText = "3.2 ms";
                 document.getElementById('iso-cpu').innerText = "< 1%";
                 document.getElementById('iso-valid').innerText = "True";
