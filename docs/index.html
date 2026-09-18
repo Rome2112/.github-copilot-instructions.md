@@ -47,6 +47,18 @@
             font-size: 0.95rem;
         }
 
+        .dashboard-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-links .btn {
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -153,6 +165,15 @@
         <p>Enterprise Infrastructure Simulation: Deterministic Schema Mapping vs. Probabilistic Autoregressive LLM Repairs</p>
     </div>
 
+    <nav class="dashboard-links" aria-label="Dashboard navigation">
+        <a href="isomorphic_engine.html" class="btn">
+            Launch Entropy Engine Dashboard
+        </a>
+        <a href="isomorphic_api_gateway_interceptor.html" class="btn">
+            Launch API Gateway Interceptor
+        </a>
+    </nav>
+
     <div class="equation-box">
         <strong>Isomorphic Core Axiom:</strong> &phi;(u &oplus; v) = &phi;(u) &otimes; &phi;(v) | Bounded Schema Complexity: O(N log K) | Ker(&phi;) = {0}
     </div>
@@ -222,13 +243,26 @@
             
             setTimeout(() => {
                 // Standard Result
-                document.getElementById('standard-output').value = `{\n  "event": "PAYMENT_INTENT",\n  "amount": 9950,\n  "status": "succeeded",\n  "metadata": {\n    "user_id": "USR_9921",\n    "note": "Probabilistic guess added"\n  }\n}`;
+                document.getElementById('standard-output').value = `{
+  "event": "PAYMENT_INTENT",
+  "amount": 9950,
+  "status": "succeeded",
+  "metadata": {
+    "user_id": "USR_9921",
+    [...]
                 document.getElementById('std-latency').innerText = "3,420 ms";
                 document.getElementById('std-cpu').innerText = "100%";
                 document.getElementById('std-valid').innerText = "False (Drift)";
 
                 // Isomorphic Result
-                document.getElementById('iso-output').value = `{\n  "event": "PAYMENT_INTENT",\n  "amount": 9950,\n  "status": "succeeded",\n  "metadata": {\n    "user_id": "USR_9921"\n  },\n  "execution_metric": "bounded_schema_ok"\n}`;
+                document.getElementById('iso-output').value = `{
+  "event": "PAYMENT_INTENT",
+  "amount": 9950,
+  "status": "succeeded",
+  "metadata": {
+    "user_id": "USR_9921"
+  },
+  "e[...]`;
                 document.getElementById('iso-latency').innerText = "3.2 ms";
                 document.getElementById('iso-cpu').innerText = "< 1%";
                 document.getElementById('iso-valid').innerText = "True";
