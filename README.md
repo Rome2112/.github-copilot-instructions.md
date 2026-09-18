@@ -1,11 +1,17 @@
 # Isomorphic Structural Engine 🚀
-**A Deterministic LLM Compiler Framework for $O(N \log K)$ Sub-Linear Parsing & Zero-Entropy Execution**
 
-[![Isomorphic Theory](https://img.shields.io/badge/Theory-Isomorphic_Structural_Mapping-blue.svg)](#)
-[![Execution Bound](https://img.shields.io/badge/Complexity-O(N_log_K)-green.svg)](#)
+[![CI](https://github.com/Rome2112/isomorphic-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/Rome2112/isomorphic-engine/actions/workflows/ci.yml)
+[![Pages](https://github.com/Rome2112/isomorphic-engine/actions/workflows/pages.yml/badge.svg)](https://github.com/Rome2112/isomorphic-engine/actions/workflows/pages.yml)
+[![License](https://img.shields.io/github/license/Rome2112/isomorphic-engine)](https://github.com/Rome2112/isomorphic-engine)
+[![Complexity Bound](https://img.shields.io/badge/Complexity-O(N_log_K)-green.svg)](#)
 [![AST Integrity](https://img.shields.io/badge/AST_Validation-100%25-brightgreen.svg)](#)
 
+A deterministic schema-mapping framework for bounded AST construction, zero-drift structural validation, sub-linear parsing, and interactive browser-based operational dashboards.
+
+---
+
 ## 📌 Executive Overview
+
 Standard Large Language Models (LLMs) operate under probabilistic autoregressive token sampling, causing high quadratic compute latency $O(N^2)$, continuous core load, and structural drift (JSON/AST hallucination).
 
 **Isomorphic Structural Theory** replaces probabilistic token speculation with algebraic homomorphism mappings:
@@ -27,14 +33,27 @@ By projecting raw inputs directly onto bounded schema validation sets $\Omega_{\
 ---
 
 ## 🛠 Repository Structure
-* `.github/copilot-instructions.md`: Custom compiler rules forcing GitHub Copilot to generate $O(N \log K)$ isomorphic code.
+
+* `.github/workflows/`: CI/CD automation for quality enforcement (`ci.yml`) and GitHub Pages deployment (`pages.yml`).
 * `isomorphic_benchmark.py`: Python Minimal Working Example (MWE) benchmark script.
-* `index.html`: Interactive API Gateway Interceptor simulation dashboard.
-* `docs/`: Pure theoretical monographs, algebraic proofs, and commercial valuation frameworks.
+* `test_harness.py`: Deterministic test suite verifying AST controllers and DOM/JS dashboard integrity.
+* `docs/`: Theoretical monographs, algebraic proofs, commercial frameworks, and interactive dashboard simulations (`index.html`).
 
 ---
 
 ## ⚡ Quick Start
-Run the Python benchmark locally:
+
+Python 3.10+ is required. The project operates with zero external runtime dependencies:
+
 ```bash
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+
+# Upgrade tooling and run quality checks
+python -m pip install --upgrade pip ruff
+ruff check .
+
+# Execute unit test harness and system benchmarks
+python test_harness.py
 python isomorphic_benchmark.py
